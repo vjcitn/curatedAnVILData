@@ -1,0 +1,222 @@
+# Tables for GTEx -- limited to ancestry "Black or African American" or "White"
+
+Workspace was generated from gen3.theanvil.io explorer, filtering to GTEx participants with given ancestry
+
+
+```{r ch1}
+version
+```
+
+
+
+```{r ch2}
+suppressPackageStartupMessages({
+    BiocManager::install("AnVIL", force=TRUE) # in case of updates
+})
+library(AnVIL)
+```
+
+
+```{r ch3}
+avworkspace()
+```
+
+```{r ch4}
+ta = avtables()
+ta
+```
+
+
+
+```{r ch2}
+seqtab = avtable(table="sequencing")
+```
+
+
+```{r ch3}
+dim(seqtab)
+```
+
+
+```{r ch4}
+table(seqtab$`pfb:data_format`)
+```
+
+
+
+
+```{r ch5}
+table(seqtab$`pfb:data_type`, seqtab$`pfb:data_format`)
+```
+
+
+```{r ch6}
+table(seqtab$`pfb:data_category`, seqtab$`pfb:data_format`)
+```
+
+
+
+```{r ch7}
+subj = avtable(table="subject")
+```
+
+
+```{r ch8}
+table(subj$`pfb:ancestry`)
+```
+
+
+
+```{r ch9}
+samp = avtable(table="sample")
+```
+
+
+```{r ch10}
+table(samp$`pfb:tissue_type`)
+```
+
+
+
+```{r ch11}
+library(dplyr)
+lungsamp = samp |> filter(`pfb:tissue_type` == "Lung")
+dim(lungsamp)
+```
+
+
+
+```{r ch12}
+names(lungsamp)
+```
+
+
+```{r ch13}
+intersect(names(lungsamp), names(seqtab))
+```
+
+
+
+```{r ch14}
+intersect(names(seqtab), names(subj))
+```
+
+
+
+
+```{r ch15}
+length(intersect(lungsamp$`pfb:subject`, subj$`subject_id`))
+```
+
+
+
+```{r ch16}
+length(intersect(seqtab$`pfb:sample`, samp$`sample_id`))
+```
+
+
+
+```{r ch17}
+mm = mutate(lungsamp, subject_id=`pfb:subject`)
+```
+
+
+```{r ch18}
+lsasu = left_join(mm, subj, by="subject_id")
+```
+
+
+```{r ch19}
+dim(lsasu)
+```
+
+
+```{r ch20}
+length(unique(lsasu$subject_id))
+```
+
+
+```{r ch21}
+sqsq = mutate(seqtab, sample_id=`pfb:sample`)
+```
+
+
+```{r ch22}
+lsqsasu = right_join(sqsq, lsasu, by="sample_id")
+```
+
+
+```{r ch23}
+dim(lsqsasu)
+```
+
+
+
+```{r ch24}
+length(unique(lsqsasu$subject_id))
+```
+
+
+
+
+```{r ch25}
+table(lsqsasu$`pfb:data_format`)
+```
+
+```{r ch26}
+lbw = lsqsasu |> filter(`pfb:data_format`=="bigWig")
+```
+
+
+```{r ch27}
+dim(lbw)
+```
+
+
+```{r ch28}
+lbs_drs = lbw %>% select(`pfb:ga4gh_drs_uri`)
+head(lbs_drs,3)
+```
+
+```{r ch29}
+lbs_gs = drs_stat(lbs_drs[[1]]) # data.frame unwrapping
+```
+
+
+```{r ch30}
+head(lbs_gs,3)[,1:5]
+```
+
+
+```{r ch31}
+chk = lbs_gs[1,4][[1]]
+chk
+```
+
+It would be nice to query the BigWig directly.  But the bucket is requester pays, and we may need enhancements to rtracklayer.
+
+
+```{r ch32}
+gsutil_cp(chk, Sys.getenv("WORKSPACE_BUCKET"))
+```
+
+
+```{r ch33}
+gsutil_ls(Sys.getenv("WORKSPACE_BUCKET"))
+```
+
+
+```{r ch34}
+gsutil_cp(chk, ".")
+```
+
+
+```{r ch35}
+dir()
+```
+
+
+```{r ch36}
+library(rtracklayer)
+import(dir()[2])
+```

@@ -219,5 +219,5 @@ dir()
 
 ```{r ch36}
 library(rtracklayer)
-import(dir()[2])
+#import(dir(patt="GTEX-")[1])
 ```

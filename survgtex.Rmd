@@ -12,6 +12,7 @@ version
 ```{r ch2}
 suppressPackageStartupMessages({
     BiocManager::install("AnVIL", force=TRUE) # in case of updates
+    AnVIL::install("rtracklayer")
 })
 library(AnVIL)
 ```
@@ -28,17 +29,17 @@ ta
 
 
 
-```{r ch2}
+```{r ch2a}
 seqtab = avtable(table="sequencing")
 ```
 
 
-```{r ch3}
+```{r ch3a}
 dim(seqtab)
 ```
 
 
-```{r ch4}
+```{r ch4a}
 table(seqtab$`pfb:data_format`)
 ```
 

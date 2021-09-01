@@ -1,6 +1,6 @@
 Package: curatedAnVILData
 Title: Use MultiAssayExperiment to interface to AnVIL data resources
-Version: 0.0.1
+Version: 0.0.2
 Authors@R:
     person(given = "Vince",
            family = "Carey",
@@ -12,6 +12,7 @@ Description: Use MultiAssayExperiment to interface to AnVIL data resources.  Wor
 	interrogate and analyze data that are materialized on need.
 Depends: R (>= 4.0.0), tools, utils, MultiAssayExperiment, dplyr
 Suggests: knitr, BiocStyle, testthat, rmarkdown
+Imports: TxDb.Hsapiens.UCSC.hg38.knownGene, TnT
 License: Artistic-2.0
 VignetteBuilder: knitr
 biocViews: DNAMethylation, Genetics

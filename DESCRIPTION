@@ -10,7 +10,7 @@ Authors@R:
 Description: Use MultiAssayExperiment to interface to AnVIL data resources.  Work from
 	PFB extracted to Terra data model.  Use virtual SummarizedExperiments, etc., to
 	interrogate and analyze data that are materialized on need.
-Depends: R (>= 4.0.0), tools, utils
+Depends: R (>= 4.0.0), tools, utils, MultiAssayExperiment, dplyr
 Suggests: knitr, BiocStyle, testthat, rmarkdown
 License: Artistic-2.0
 VignetteBuilder: knitr

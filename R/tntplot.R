@@ -1,4 +1,4 @@
-# Use TnT to visualize a GRanges segment, assumes an mcols element 'score' is present, numeric-like
+#' Use TnT to visualize a GRanges segment, assumes an mcols element 'score' is present, numeric-like
 #' @param gr GRanges instance
 #' @param scorecolor character(1) color used on PinTrack for scores
 #' @param genecolor character(1) color used on GeneTrackFromTxDb for gene regions

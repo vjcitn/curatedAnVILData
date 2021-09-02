@@ -15,5 +15,7 @@ Suggests: knitr, BiocStyle, testthat, rmarkdown
 Imports: TxDb.Hsapiens.UCSC.hg38.knownGene, TnT,
   GenomicRanges, AnnotationDbi, org.Hs.eg.db
 License: Artistic-2.0
+LazyData: yes
 VignetteBuilder: knitr
 biocViews: DNAMethylation, Genetics
+RoxygenNote: 7.1.1

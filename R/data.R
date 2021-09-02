@@ -2,5 +2,6 @@
 #' @docType data
 #' @format MultiAssayExperiment
 #' @examples
+#' data(GTExMAE)
 #' GTExMAE
 "GTExMAE"

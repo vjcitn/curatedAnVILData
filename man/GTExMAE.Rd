@@ -14,6 +14,7 @@ GTExMAE
 PFB extract of GTEx converted to MultiAssayExperiment
 }
 \examples{
+data(GTExMAE)
 GTExMAE
 }
 \keyword{datasets}

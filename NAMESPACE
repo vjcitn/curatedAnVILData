@@ -3,3 +3,8 @@
 export(expt)
 export(simplify_names)
 export(tntplot)
+import(GenomicRanges)
+import(TnT)
+import(TxDb.Hsapiens.UCSC.hg38.knownGene)
+importFrom(AnnotationDbi,mapIds)
+importFrom(GenomeInfoDb,keepStandardChromosomes)

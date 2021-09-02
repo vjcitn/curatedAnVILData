@@ -1,15 +1,32 @@
+---
+title: "curatedAnVILData -- early sketch"
+shorttitle: "outlier dytection methods"
+author: "Vincent J. Carey, stvjc at channing.harvard.edu"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{curatedAnVILData -- early sketch}
+  %\VignetteEncoding{UTF-8}
+output:
+  BiocStyle::html_document:
+    highlight: pygments
+    number_sections: yes
+    theme: united
+    toc: yes
+---
+
 # Tables for GTEx -- limited to ancestry "Black or African American" or "White"
 
 Workspace was generated from gen3.theanvil.io explorer, filtering to GTEx participants with given ancestry
 
 
-```{r ch1}
+```{r ch1, eval=FALSE}
 version
 ```
 
 
 
-```{r ch2}
+```{r ch2, eval=FALSE}
 suppressPackageStartupMessages({
     BiocManager::install("AnVIL", force=TRUE) # in case of updates
     AnVIL::install("rtracklayer")
@@ -18,68 +35,68 @@ library(AnVIL)
 ```
 
 
-```{r ch3}
+```{r ch3, eval=FALSE}
 avworkspace()
 ```
 
-```{r ch4}
+```{r ch4, eval=FALSE}
 ta = avtables()
 ta
 ```
 
 
 
-```{r ch2a}
+```{r ch2a, eval=FALSE}
 seqtab = avtable(table="sequencing")
 ```
 
 
-```{r ch3a}
+```{r ch3a, eval=FALSE}
 dim(seqtab)
 ```
 
 
-```{r ch4a}
+```{r ch4a, eval=FALSE}
 table(seqtab$`pfb:data_format`)
 ```
 
 
 
 
-```{r ch5}
+```{r ch5, eval=FALSE}
 table(seqtab$`pfb:data_type`, seqtab$`pfb:data_format`)
 ```
 
 
-```{r ch6}
+```{r ch6, eval=FALSE}
 table(seqtab$`pfb:data_category`, seqtab$`pfb:data_format`)
 ```
 
 
 
-```{r ch7}
+```{r ch7, eval=FALSE}
 subj = avtable(table="subject")
 ```
 
 
-```{r ch8}
+```{r ch8, eval=FALSE}
 table(subj$`pfb:ancestry`)
 ```
 
 
 
-```{r ch9}
+```{r ch9, eval=FALSE}
 samp = avtable(table="sample")
 ```
 
 
-```{r ch10}
+```{r ch10, eval=FALSE}
 table(samp$`pfb:tissue_type`)
 ```
 
 
 
-```{r ch11}
+```{r ch11, eval=FALSE}
 library(dplyr)
 lungsamp = samp |> filter(`pfb:tissue_type` == "Lung")
 dim(lungsamp)
@@ -87,109 +104,109 @@ dim(lungsamp)
 
 
 
-```{r ch12}
+```{r ch12, eval=FALSE}
 names(lungsamp)
 ```
 
 
-```{r ch13}
+```{r ch13, eval=FALSE}
 intersect(names(lungsamp), names(seqtab))
 ```
 
 
 
-```{r ch14}
+```{r ch14, eval=FALSE}
 intersect(names(seqtab), names(subj))
 ```
 
 
 
 
-```{r ch15}
+```{r ch15, eval=FALSE}
 length(intersect(lungsamp$`pfb:subject`, subj$`subject_id`))
 ```
 
 
 
-```{r ch16}
+```{r ch16, eval=FALSE}
 length(intersect(seqtab$`pfb:sample`, samp$`sample_id`))
 ```
 
 
 
-```{r ch17}
+```{r ch17, eval=FALSE}
 mm = mutate(lungsamp, subject_id=`pfb:subject`)
 ```
 
 
-```{r ch18}
+```{r ch18, eval=FALSE}
 lsasu = left_join(mm, subj, by="subject_id")
 ```
 
 
-```{r ch19}
+```{r ch19, eval=FALSE}
 dim(lsasu)
 ```
 
 
-```{r ch20}
+```{r ch20, eval=FALSE}
 length(unique(lsasu$subject_id))
 ```
 
 
-```{r ch21}
+```{r ch21, eval=FALSE}
 sqsq = mutate(seqtab, sample_id=`pfb:sample`)
 ```
 
 
-```{r ch22}
+```{r ch22, eval=FALSE}
 lsqsasu = right_join(sqsq, lsasu, by="sample_id")
 ```
 
 
-```{r ch23}
+```{r ch23, eval=FALSE}
 dim(lsqsasu)
 ```
 
 
 
-```{r ch24}
+```{r ch24, eval=FALSE}
 length(unique(lsqsasu$subject_id))
 ```
 
 
 
 
-```{r ch25}
+```{r ch25, eval=FALSE}
 table(lsqsasu$`pfb:data_format`)
 ```
 
-```{r ch26}
+```{r ch26, eval=FALSE}
 lbw = lsqsasu |> filter(`pfb:data_format`=="bigWig")
 ```
 
 
-```{r ch27}
+```{r ch27, eval=FALSE}
 dim(lbw)
 ```
 
 
-```{r ch28}
+```{r ch28, eval=FALSE}
 lbs_drs = lbw %>% select(`pfb:ga4gh_drs_uri`)
 head(lbs_drs,3)
 ```
 
-```{r ch29}
+```{r ch29, eval=FALSE}
 lbs_gs = drs_stat(lbs_drs[[1]]) # data.frame unwrapping
 ```
 
 
-```{r ch30}
+```{r ch30, eval=FALSE}
 head(lbs_gs,3)[,1:5]
 ```
 
 
-```{r ch31}
+```{r ch31, eval=FALSE}
 chk = lbs_gs[1,4][[1]]
 chk
 ```
@@ -197,27 +214,27 @@ chk
 It would be nice to query the BigWig directly.  But the bucket is requester pays, and we may need enhancements to rtracklayer.
 
 
-```{r ch32}
+```{r ch32, eval=FALSE}
 gsutil_cp(chk, Sys.getenv("WORKSPACE_BUCKET"))
 ```
 
 
-```{r ch33}
+```{r ch33, eval=FALSE}
 gsutil_ls(Sys.getenv("WORKSPACE_BUCKET"))
 ```
 
 
-```{r ch34}
+```{r ch34, eval=FALSE}
 gsutil_cp(chk, ".")
 ```
 
 
-```{r ch35}
+```{r ch35, eval=FALSE}
 dir()
 ```
 
 
-```{r ch36}
+```{r ch36, eval=FALSE}
 library(rtracklayer)
 #import(dir(patt="GTEX-")[1])
 ```

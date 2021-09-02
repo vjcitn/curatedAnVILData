@@ -7,7 +7,7 @@
 simplify_names(.data)
 }
 \arguments{
-\item{data}{input data.frame-like entity}
+\item{.data}{input data.frame-like entity}
 }
 \description{
 simplify names of PFB export

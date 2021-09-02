@@ -10,7 +10,9 @@ tntplot(
   genecolor = "gold",
   gt = NULL,
   viewradius = 1e+05,
-  coordradius = 2e+05
+  coordradius = 2e+05,
+  gheight = 200,
+  sheight = 200
 )
 }
 \arguments{
@@ -25,7 +27,15 @@ tntplot(
 \item{viewradius}{numeric(1) radius around given `gr` for display}
 
 \item{coordradius}{numeric(1) radius around region to allow panning}
+
+\item{gheight}{numeric(1) display height for gene track}
+
+\item{sheight}{numeric(1) display height for score track}
 }
 \description{
 Use TnT to visualize a GRanges segment, assumes an mcols element 'score' is present, numeric-like
+}
+\note{
+This is very preliminary design.  We may withdraw import of GenomicRanges because
+it can slow initialization, but for now it is imported by package.
 }

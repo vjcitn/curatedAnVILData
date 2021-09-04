@@ -53,7 +53,9 @@ GTExMAE
 ```
 
 The `GTExMAE` has 30 "experiments" corresponding to types
-of tissue that were subjected to RNA sequencing.
+of tissue that were subjected to sequencing.  The number
+of columns listed for each tissue type corresponds to the
+number of unique associated sequencing identifiers.
 
 ```
 A MultiAssayExperiment object of 30 listed
@@ -71,7 +73,10 @@ A MultiAssayExperiment object of 30 listed
  [10] Colon: SummarizedExperiment with 0 rows and 3420 columns
  [11] Brain: SummarizedExperiment with 0 rows and 9807 columns
  ...
- ```
+```
+
+We see 0 rows for each experiment because we have not bound any
+molecular assay data (or data references) to any samples.
 
 We can create a selection of bigWig files measuring
 mRNA abundance in lung via:

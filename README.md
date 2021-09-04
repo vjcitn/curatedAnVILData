@@ -132,4 +132,4 @@ Eventually region-based queries can be conducted over HTTP within AnVIL.
 We produced the following display (it is interactive when produced in RStudio) using the tntplot function in curatedAnVILData.
 This takes a GRanges as input; the regions must have width 1 and an mcols field 'value' must be present.
 
-![tntplot](https://storage.googleapis.com/bioc-anvil-images/tntplotAnVIL.png)
+<img alt="coverage" title="TnT coverage sketch" src="https://storage.googleapis.com/bioc-anvil-images/tntplotAnVIL.png" width=800>

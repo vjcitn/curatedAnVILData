@@ -59,22 +59,25 @@ of tissue that were subjected to RNA sequencing.
 A MultiAssayExperiment object of 30 listed
  experiments with user-defined names and respective classes.
  Containing an ExperimentList class object of length 30:
- [1] Skin: tbl_df with 7272 rows and 270 columns
- [2] Lung: tbl_df with 3171 rows and 270 columns
- [3] Thyroid: tbl_df with 2814 rows and 270 columns
- [4] Adipose Tissue: tbl_df with 4888 rows and 270 columns
- [5] Blood Vessel: tbl_df with 5849 rows and 270 columns
- [6] Esophagus: tbl_df with 6231 rows and 270 columns
- [7] Blood: tbl_df with 7383 rows and 270 columns
- [8] Heart: tbl_df with 3689 rows and 270 columns
+ [1] Skin: SummarizedExperiment with 0 rows and 7206 columns
+ [2] Lung: SummarizedExperiment with 0 rows and 3055 columns
+ [3] Thyroid: SummarizedExperiment with 0 rows and 2743 columns
+ [4] Adipose Tissue: SummarizedExperiment with 0 rows and 4853 columns
+ [5] Blood Vessel: SummarizedExperiment with 0 rows and 5770 columns
+ [6] Esophagus: SummarizedExperiment with 0 rows and 6226 columns
+ [7] Blood: SummarizedExperiment with 0 rows and 6787 columns
+ [8] Heart: SummarizedExperiment with 0 rows and 3623 columns
+ [9] Nerve: SummarizedExperiment with 0 rows and 2532 columns
+ [10] Colon: SummarizedExperiment with 0 rows and 3420 columns
+ [11] Brain: SummarizedExperiment with 0 rows and 9807 columns
  ...
  ```
 
 We can create a selection of bigWig files measuring
 mRNA abundance in lung via:
 ```
-lungbw = GTExMAE |> expt("Lung") |> simplify_names() |> 
-  filter(data_category=="Transcriptome Profiling" & data_format == "bigWig") 
+lungbw = GTExMAE[,,"Lung"][[1]] |> colData() |> 
+     filter(data_category=="Transcriptome Profiling" & data_format == "bigWig") 
 ```
 
 Some interesting sample-level metadata is available in free text:
@@ -94,7 +97,39 @@ head(lungbw |> select(pathology_notes_prc) |> unlist() |> unname(),10)
 [10] "2 pieces; bronchus and large blood vessel comprise 50% of 1 piece" 
 ```
 
+With the wordcloud2 R package and some hints from a [blog post](https://towardsdatascience.com/create-a-word-cloud-with-r-bde3e7422e8a),
+we can summarize the content of these pathology notes:
+
+<img alt="wordcloud" title="pathology notes wordcloud" src="https://storage.googleapis.com/bioc-anvil-images/lungWCloud.png" width=500>
+
+
+### Working with DRS URI
+
+```
+> lungbw$ga4gh_drs_uri[1]
+[1] "drs://dg.ANV0:dg.ANV0/c19b5318-4b0b-4585-b833-cdf927f0ddfc"
+> AnVIL::drs_stat(.Last.value)
+# A tibble: 1 × 10
+  fileName         size contentType  gsUri          timeCreated  timeUpdated  bucket   name         googleServiceAc… hashes
+  <chr>           <int> <chr>        <chr>          <chr>        <chr>        <chr>    <chr>        <list>           <list>
+1 GTEX-13X6K-1…  1.76e8 application… gs://fc-secur… 2020-07-08T… 2020-07-08T… fc-secu… GTEx_Analys… <named list [1]> <name…
+> .Last.value |> as.data.frame()
+                                                              fileName      size      contentType
+1 GTEX-13X6K-1626-SM-7EWCX.Aligned.sortedByCoord.out.patched.md.bigWig 175687253 application/json
+                                                                                                                                                                     gsUri
+1 gs://fc-secure-ff8156a3-ddf3-42e4-9211-0fd89da62108/GTEx_Analysis_2017-06-05_v8_RNAseq_bigWig_files/GTEX-13X6K-1626-SM-7EWCX.Aligned.sortedByCoord.out.patched.md.bigWig
+               timeCreated              timeUpdated                                         bucket
+1 2020-07-08T18:46:07.637Z 2020-07-08T18:46:07.637Z fc-secure-ff8156a3-ddf3-42e4-9211-0fd89da62108
+                                                                                                                  name
+1 GTEx_Analysis_2017-06-05_v8_RNAseq_bigWig_files/GTEX-13X6K-1626-SM-7EWCX.Aligned.sortedByCoord.out.patched.md.bigWig
+```
+We can use `AnVIL::gsutil_cp` on the `gsUri` obtained above, to materialize the bigWig for local analysis.
+
+Eventually region-based queries can be conducted over HTTP within AnVIL.
 
 ### Visualizing imported bigWig
+
+We produced the following display (it is interactive when produced in RStudio) using the tntplot function in curatedAnVILData.
+This takes a GRanges as input; the regions must have width 1 and an mcols field 'value' must be present.
 
 ![tntplot](https://storage.googleapis.com/bioc-anvil-images/tntplotAnVIL.png)

@@ -12,7 +12,8 @@ tntplot(
   viewradius = 1e+05,
   coordradius = 2e+05,
   gheight = 200,
-  sheight = 200
+  sheight = 200,
+  confine = TRUE
 )
 }
 \arguments{
@@ -31,6 +32,10 @@ tntplot(
 \item{gheight}{numeric(1) display height for gene track}
 
 \item{sheight}{numeric(1) display height for score track}
+
+\item{confine}{logical(1) if TRUE, set ranges to length 1 midpoint of given range}
+
+\item{score2val}{logical(1) if TRUE, add 'value' as mcols element, taking content from 'score'}
 }
 \description{
 Use TnT to visualize a GRanges segment, assumes an mcols element 'score' is present, numeric-like

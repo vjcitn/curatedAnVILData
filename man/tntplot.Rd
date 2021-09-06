@@ -13,7 +13,8 @@ tntplot(
   coordradius = 2e+05,
   gheight = 200,
   sheight = 200,
-  confine = TRUE
+  confine = TRUE,
+  score2val = TRUE
 )
 }
 \arguments{

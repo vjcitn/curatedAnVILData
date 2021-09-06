@@ -18,7 +18,7 @@
 #' it can slow initialization, but for now it is imported by package.
 #' @export
 tntplot = function(gr, scorecolor="lightblue", genecolor="gold", gt=NULL, viewradius=100000, coordradius=200000,
-  gheight=200, sheight=200, confine=TRUE) {
+  gheight=200, sheight=200, confine=TRUE, score2val=TRUE) {
   if (!requireNamespace("TnT")) stop("install TnT to use this")
   if (!requireNamespace("GenomicRanges")) stop("install GenomicRanges to use this")
   if (score2val) gr$value = gr$score

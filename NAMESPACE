@@ -3,6 +3,7 @@
 S3method(filter,DFrame)
 S3method(filter,DataFrame)
 export(expt)
+export(multitnt)
 export(simplify_names)
 export(tntplot)
 import(GenomicRanges)

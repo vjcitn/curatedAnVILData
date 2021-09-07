@@ -42,6 +42,18 @@ with respect to convenience of identifying and filtering key data components of 
 
 ### A MultiAssayExperiment
 
+#### Concept
+
+The MultiAssayExperiment class unites diverse 'assays' collected on
+a collection of samples.
+
+<img alt="wordcloud" title="pathology notes wordcloud" src="https://storage.googleapis.com/bioc-anvil-images/MAEschema.png" width=900>
+
+That's from the [MultiAssayExperiment vignette](https://bioconductor.org/packages/release/bioc/vignettes/MultiAssayExperiment/inst/doc/MultiAssayExperiment.html).  See also
+the [JCO CCI paper](https://ascopubs.org/doi/full/10.1200/CCI.19.00119).
+
+#### An example
+
 After `curatedAnVILData` has been installed, acquire metadata
 about a selection of GTEx samples via
 ```
@@ -53,9 +65,7 @@ GTExMAE
 ```
 
 The `GTExMAE` has 30 "experiments" corresponding to types
-of tissue that were subjected to sequencing.  The number
-of columns listed for each tissue type corresponds to the
-number of unique associated sequencing identifiers.
+of tissue that were subjected to RNA sequencing.
 
 ```
 A MultiAssayExperiment object of 30 listed
@@ -73,17 +83,41 @@ A MultiAssayExperiment object of 30 listed
  [10] Colon: SummarizedExperiment with 0 rows and 3420 columns
  [11] Brain: SummarizedExperiment with 0 rows and 9807 columns
  ...
-```
-
-We see 0 rows for each experiment because we have not bound any
-molecular assay data (or data references) to any samples.
+ ```
+ 
+ #### Interrogating an MAE
+ 
+ The variety of sequencing tasks for lung:
+ 
+ ```
+ GTExMAE[,,"Lung"][[1]] |> colData() |> as.data.frame() |> group_by(sequencing_assay) |> summarise(n=n())
+ ```
+ 
+ The result is chatty:
+ ```
+ harmonizing input:
+  removing 72685 sampleMap rows not in names(experiments)
+  removing 72685 colData rownames not in sampleMap 'primary'
+ A tibble: 4 × 2
+  sequencing_assay     n
+  <chr>            <int>
+1 RNA-Seq           2737
+2 WES                 24
+3 WGS                 20
+4 NA                 274
+Warning message:
+'experiments' dropped; see 'metadata' 
+ ```
+ 
+ #### Filtering an MAE
 
 We can create a selection of bigWig files measuring
 mRNA abundance in lung via:
+
 ```
-lungbw = GTExMAE[,,"Lung"][[1]] |> colData() |> 
-     filter(data_category=="Transcriptome Profiling" & data_format == "bigWig") 
+lungbw = GTExMAE[,,"Lung"][[1]] |> colData() |> filter(data_category=="Transcriptome Profiling" & data_format == "bigWig") 
 ```
+
 
 Some interesting sample-level metadata is available in free text:
 ```
@@ -106,6 +140,7 @@ With the wordcloud2 R package and some hints from a [blog post](https://towardsd
 we can summarize the content of these pathology notes:
 
 <img alt="wordcloud" title="pathology notes wordcloud" src="https://storage.googleapis.com/bioc-anvil-images/lungWCloud.png" width=500>
+
 
 
 ### Working with DRS URI
@@ -138,3 +173,59 @@ We produced the following display (it is interactive when produced in RStudio) u
 This takes a GRanges as input; the regions must have width 1 and an mcols field 'value' must be present.
 
 <img alt="coverage" title="TnT coverage sketch" src="https://storage.googleapis.com/bioc-anvil-images/tntplotAnVIL.png" width=800>
+
+### Exercise 1 for Sept. 7
+
+Form a MAE-level colData with selected variables, bind to GTExMAE, and demonstrate its use for cross-tissue selection.
+
+#### Solution
+
+Here is a function for this task;
+
+```
+add_cd = function(mae, kpvar=NULL) {
+  allcds = lapply(experiments(mae), colData)
+  fullm = do.call(rbind, allcds)
+	if (!is.null(kpvar)) {
+	     fullm = fullm[,kpvar]
+			 }
+	colData(mae) = fullm
+	mae
+}
+```
+
+Add complete colData to GTExMAE:
+
+```
+> colData(GTExMAE)
+DataFrame with 75740 rows and 0 columns
+> gt2 = add_cd(GTExMAE)
+> dim(colData(gt2))
+[1] 75740   270
+```
+
+Limit to samples for which ischemic time exceeds 1400 minutes:
+
+```
+> gt2[, which(gt2$ischemic_time_in_minutes>1400), ]
+harmonizing input:
+  removing 9 sampleMap rows with 'colname' not in colnames of experiments
+A MultiAssayExperiment object of 30 listed
+ experiments with user-defined names and respective classes.
+ Containing an ExperimentList class object of length 30:
+ [1] Skin: SummarizedExperiment with 0 rows and 31 columns
+ [2] Lung: SummarizedExperiment with 0 rows and 10 columns
+ [3] Thyroid: SummarizedExperiment with 0 rows and 20 columns
+ [4] Adipose Tissue: SummarizedExperiment with 0 rows and 35 columns
+ [5] Blood Vessel: SummarizedExperiment with 0 rows and 42 columns
+ [6] Esophagus: SummarizedExperiment with 0 rows and 50 columns
+ ...
+ ```
+ 
+
+### Exercise 2 for Sept. 7
+
+Compare expression patterns for selected genes (provide a shiny app) in lung samples annotated with either fibrosis or emphysema.
+
+<img alt="coverage" title="TnT coverage sketch" src="https://storage.googleapis.com/bioc-anvil-images/tracks.png" width=800>
+

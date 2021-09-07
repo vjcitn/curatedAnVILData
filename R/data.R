@@ -14,10 +14,15 @@
 #' gr38s
 "gr38s"
 
-#' genea in MSigDb HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION
+#' genes in MSigDb HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION
 #' @docType data
 #' @format character()
 #' @examples
 #' data(msig_emt)
 #' head(msig_emt)
 "msig_emt"
+
+#' GenomicFiles instance for 20 GTEx Lung samples (with notations on emphysema or fibrosis)
+#' @docType data
+#' @format GenomicFiles
+"empfib_GF"

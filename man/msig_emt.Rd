@@ -3,7 +3,7 @@
 \docType{data}
 \name{msig_emt}
 \alias{msig_emt}
-\title{genea in MSigDb HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION}
+\title{genes in MSigDb HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION}
 \format{
 character()
 }
@@ -11,7 +11,7 @@ character()
 msig_emt
 }
 \description{
-genea in MSigDb HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION
+genes in MSigDb HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION
 }
 \examples{
 data(msig_emt)

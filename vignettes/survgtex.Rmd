@@ -58,8 +58,8 @@ ta
 Extract the 'sequencing' table.
 
 
-```{r ch2a, eval=TRUE}
-seqtab = avtable(table="sequencing")
+```{r ch2a, eval=TRUE, message=FALSE, results="hide"}
+seqtab = avtable_paged(table="sequencing")
 ```
 
 Its dimensions are `r nrow(seqtab)` by `r ncol(seqtab)`.
@@ -81,11 +81,11 @@ table(seqtab$`pfb:data_category`, seqtab$`pfb:data_format`)
 
 ```{r ch7, eval=TRUE}
 subj = avtable(table="subject")
-table(subj$`pfb:ancestry`)
+table(unlist(subj$`pfb:ancestry.items`))
 ```
 
-```{r ch9, eval=TRUE}
-if (!exists("samp")) samp = avtable(table="sample") # slow
+```{r ch9, eval=TRUE, message=FALSE, results="hide"}
+if (!exists("samp")) samp = avtable_paged(table="sample") # slow
 table(samp$`pfb:tissue_type`)
 ```
 
@@ -93,7 +93,7 @@ Filter to lung samples.
 
 ```{r ch11, eval=TRUE}
 library(dplyr)
-lungsamp = samp |> filter(`pfb:tissue_type` == "Lung")
+lungsamp = samp |> dplyr::filter(`pfb:tissue_type` == "Lung")
 dim(lungsamp)
 ```
 
@@ -113,42 +113,41 @@ intersect(names(lungsamp), names(seqtab))
 intersect(names(seqtab), names(subj))
 ```
 
-How many identifiers are common to sample, sequencing, and subject tables?
+How many identifiers are common to sample, sequencing, and subject tables?  Prior
+to May 2023 (or earlier), `lungsamp$pfb:subject` was a character variable.  Now
+it is a data frame with type and value columns.  So we add some code to
+produce a suitable variable for subject identity.
 
 ```{r ch15, eval=TRUE}
-length(intersect(lungsamp$`pfb:subject`, subj$`subject_id`))
+lungsamp$subject_id = lungsamp$`pfb:subject`$entityName
+length(intersect(lungsamp$subject_id, subj$subject_id))
 ```
-
+Similar changes have occurred in seqtab.
+```{r lklklklklk}
+head(seqtab$`pfb:sample`)
+```
 ```{r ch16, eval=TRUE}
-length(intersect(seqtab$`pfb:sample`, samp$`sample_id`))
+seqtab$sample_id = seqtab$`pfb:sample`$entityName
+length(intersect(seqtab$sample_id, samp$`sample_id`))
 ```
 
-We need to rename an identifier variable.
 
-```{r ch17, eval=TRUE}
-mm = mutate(lungsamp, subject_id=`pfb:subject`)
-```
 
 Join sample and subject tables.
 
 ```{r ch18, eval=TRUE}
-lsasu = left_join(mm, subj, by="subject_id")
+lsasu = left_join(lungsamp, subj, by="subject_id")
 ```
 
 This leads to `r nrow(lsasu)` records with `r ncol(lsasu)` fields.
 
 There are `r length(unique(lsasu$subject_id))` unique subject identifiers.
 
-Modify the identifier field name in the sequencing table.
-
-```{r ch21, eval=TRUE}
-sqsq = mutate(seqtab, sample_id=`pfb:sample`)
-```
 
 Join to the sample-subject table.
 
 ```{r ch22, eval=TRUE}
-lsqsasu = right_join(sqsq, lsasu, by="sample_id")
+lsqsasu = right_join(seqtab, lsasu, by="sample_id")
 ```
 
 Now there are `r length(unique(lsqsasu$subject_id))` distinct
@@ -162,7 +161,7 @@ table(lsqsasu$`pfb:data_format`)
 ```
 
 ```{r ch26, eval=TRUE}
-lbw = lsqsasu |> filter(`pfb:data_format`=="bigWig")
+lbw = lsqsasu |> dplyr::filter(`pfb:data_format`=="bigWig")
 ```
 
 

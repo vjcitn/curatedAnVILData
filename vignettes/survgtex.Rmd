@@ -1,6 +1,6 @@
 ---
 title: "curatedAnVILData -- early sketch"
-shorttitle: "outlier dytection methods"
+shorttitle: "Exploring GTEx data on lung"
 author: "Vincent J. Carey, stvjc at channing.harvard.edu"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 vignette: >

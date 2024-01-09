@@ -1,6 +1,6 @@
 Package: curatedAnVILData
 Title: Use MultiAssayExperiment to interface to AnVIL data resources
-Version: 0.0.13
+Version: 0.0.14
 Authors@R:
     person(given = "Vince",
            family = "Carey",
@@ -10,7 +10,7 @@ Authors@R:
 Description: Use MultiAssayExperiment to interface to AnVIL data resources.  Work from
 	PFB extracted to Terra data model.  Use virtual SummarizedExperiments, etc., to
 	interrogate and analyze data that are materialized on need.
-Depends: R (>= 4.0.0), tools, utils, MultiAssayExperiment, dplyr
+Depends: R (>= 4.0.0), tools, utils, MultiAssayExperiment, dplyr, BiocStyle
 Suggests: knitr, BiocStyle, testthat, rmarkdown
 Imports: TxDb.Hsapiens.UCSC.hg38.knownGene, TnT,
   GenomicRanges, AnnotationDbi, org.Hs.eg.db, GenomeInfoDb,
